@@ -6,7 +6,13 @@ import logo from '../assets/logo.svg';
 
 function Login() {
   return (
-    <img src={logo} alt='tindev'/>
+    <div className='login-container'>
+      <form>
+        <img src={logo} alt='tindev'/>
+        <input placeholder='Digite seu usuário do GitHub'></input>
+        <button type='submit'>Enviar</button>
+      </form>
+    </div>
   );
 }
 
