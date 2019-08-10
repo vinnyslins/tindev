@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import api from '../services/api';
 
@@ -20,29 +21,51 @@ function Main({ match }) {
     })();
   }, [match.params.id]);
 
+  async function handleLike(id) {
+    await api.post(`/devs/${id}/likes`, null, {
+      headers: { user: match.params.id }
+    });
+
+    setUsers(users.filter(user => user._id !== id));
+  }
+
+  async function handleDislike(id) {
+    await api.post(`/devs/${id}/dislikes`, null, {
+      headers: { user: match.params.id }
+    });
+
+    setUsers(users.filter(user => user._id !== id));
+  }
+
   return (
     <div className='main-container'>
-      <img src={logo} alt='tindev'/>
-      <ul>
-        {users.map(user => (
-          <li key={user._id}>
-          <img src={user.avatar} alt={user.name}/>
-          <footer>
-            <strong>{user.name}</strong>
-            <p>{user.bio}</p>
-          </footer>
+      <Link to='/'>
+        <img src={logo} alt='tindev'/>
+      </Link>
+      { users.length ? (
+        <ul>
+          {users.map(user => (
+            <li key={user._id}>
+            <img src={user.avatar} alt={user.name}/>
+            <footer>
+              <strong>{user.name}</strong>
+              <p>{user.bio}</p>
+            </footer>
 
-          <div className='buttons'>
-            <button>
-              <img src={dislike} alt='Dislike'></img>
-            </button>
-            <button>
-              <img src={like} alt='Like'></img>
-            </button>
-          </div>
-        </li>
-        ))}
-      </ul>
+            <div className='buttons'>
+              <button onClick={() => handleDislike(user._id)}>
+                <img src={dislike} alt='Dislike'></img>
+              </button>
+              <button onClick={() => handleLike(user._id)}>
+                <img src={like} alt='Like'></img>
+              </button>
+            </div>
+          </li>
+          ))}
+        </ul>
+      ) : (
+        <div className='empty'>Acabou :(</div>
+      ) }
     </div>
   );
 }
